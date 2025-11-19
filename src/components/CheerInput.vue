@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { soundEffects } from '../utils/soundEffects';
 
 const username = ref('');
 const emit = defineEmits<{
   (e: 'cheer', username: string): void
 }>();
 
+const handleTyping = () => {
+  soundEffects.playTyping();
+};
+
 const handleSubmit = () => {
   if (username.value.trim()) {
+    soundEffects.playClick();
     emit('cheer', username.value.trim());
   }
 };
@@ -17,15 +23,16 @@ const handleSubmit = () => {
   <div class="cheer-input">
     <div class="input-group">
       <span class="prefix">@</span>
-      <input 
-        v-model="username" 
-        type="text" 
-        placeholder="twitter_handle" 
+      <input
+        v-model="username"
+        type="text"
+        placeholder="twitter_handle"
         @keyup.enter="handleSubmit"
+        @keydown="handleTyping"
       />
     </div>
     <button @click="handleSubmit" :disabled="!username.trim()">
-      Click to know more!
+      Hit this button!
     </button>
   </div>
 </template>

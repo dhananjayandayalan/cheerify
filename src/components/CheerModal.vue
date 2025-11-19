@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 import TypewriterText from './TypewriterText.vue';
 import { generatePDF } from '../utils/pdfGenerator';
+import { soundEffects } from '../utils/soundEffects';
 
 const props = defineProps<{
   isOpen: boolean;
@@ -15,15 +16,24 @@ const emit = defineEmits<{
 
 const isTypingFinished = ref(false);
 
+// Play sound when modal opens
+watch(() => props.isOpen, (newVal) => {
+  if (newVal) {
+    soundEffects.playModalOpen();
+  }
+});
+
 const handleTypingFinished = () => {
   isTypingFinished.value = true;
 };
 
 const handleDownload = () => {
+  soundEffects.playDownload();
   generatePDF(props.note, props.username);
 };
 
 const close = () => {
+  soundEffects.playModalClose();
   emit('close');
   isTypingFinished.value = false; // Reset for next time
 };
@@ -113,7 +123,6 @@ const close = () => {
 
 .signature {
   margin-top: 1rem;
-  font-family: var(--font-mono);
   opacity: 0;
   animation: fadeIn 1s forwards;
 }
@@ -137,16 +146,5 @@ const close = () => {
 
 @keyframes fadeIn {
   to { opacity: 1; }
-}
-
-/* Transitions */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
 }
 </style>

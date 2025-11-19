@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { useTheme } from '../composables/useTheme';
+import { soundEffects } from '../utils/soundEffects';
 
 const { theme, setTheme } = useTheme();
+
+const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
+  soundEffects.playThemeSwitch();
+  setTheme(newTheme);
+};
 </script>
 
 <template>
   <div class="theme-switcher">
-    <button 
-      v-for="t in ['light', 'dark', 'system']" 
+    <button
+      v-for="t in ['light', 'dark', 'system']"
       :key="t"
       :class="{ active: theme === t }"
-      @click="setTheme(t as 'light' | 'dark' | 'system')"
+      @click="handleThemeChange(t as 'light' | 'dark' | 'system')"
     >
       {{ t.charAt(0).toUpperCase() + t.slice(1) }}
     </button>

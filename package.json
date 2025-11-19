@@ -16,11 +16,12 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "html2pdf.js": "^0.12.1",
-    "twitter-api-v2": "^1.28.0",
+    "puppeteer": "^24.30.0",
     "vue": "^3.5.22"
   },
   "devDependencies": {

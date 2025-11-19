@@ -4,11 +4,15 @@ import DisclaimerModal from './components/DisclaimerModal.vue';
 import ThemeSwitcher from './components/ThemeSwitcher.vue';
 import CheerInput from './components/CheerInput.vue';
 import CheerModal from './components/CheerModal.vue';
+import ErrorModal from './components/ErrorModal.vue';
+import LoadingAnimation from './components/LoadingAnimation.vue';
 import { generateCheer } from './utils/cheerGenerator';
 
 const isModalOpen = ref(false);
+const isErrorModalOpen = ref(false);
 const currentNote = ref('');
 const currentUsername = ref('');
+const errorMessage = ref('');
 const isLoading = ref(false);
 const disclaimerAccepted = ref(false);
 
@@ -22,9 +26,17 @@ const handleCheer = async (username: string) => {
   try {
     currentNote.value = await generateCheer(username);
     isModalOpen.value = true;
+  } catch (error) {
+    errorMessage.value = error instanceof Error ? error.message : 'An unexpected error occurred. Please try again.';
+    isErrorModalOpen.value = true;
   } finally {
     isLoading.value = false;
   }
+};
+
+const handleErrorClose = () => {
+  isErrorModalOpen.value = false;
+  errorMessage.value = '';
 };
 </script>
 
@@ -42,9 +54,7 @@ const handleCheer = async (username: string) => {
         <h1>Spread Some Joy</h1>
         <p class="subtitle">Enter your twitter handle.</p>
 
-        <div v-if="isLoading" class="loading">
-          <p>Analyzing your Twitter personality... ✨</p>
-        </div>
+        <LoadingAnimation v-if="isLoading" />
         <CheerInput v-else @cheer="handleCheer" />
       </div>
     </main>
@@ -54,6 +64,12 @@ const handleCheer = async (username: string) => {
       :note="currentNote"
       :username="currentUsername"
       @close="isModalOpen = false"
+    />
+
+    <ErrorModal
+      :isOpen="isErrorModalOpen"
+      :errorMessage="errorMessage"
+      @close="handleErrorClose"
     />
   </div>
 </template>
@@ -110,21 +126,6 @@ h1 {
   max-width: 400px;
 }
 
-.loading {
-  text-align: center;
-  font-size: 1.2rem;
-  opacity: 0.8;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-}
 
 @media (max-width: 600px) {
   h1 {

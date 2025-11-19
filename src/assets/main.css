@@ -18,7 +18,7 @@
 body {
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: var(--font-mono);
+  font-family: var(--font-mono, 'Courier New', Courier, monospace);
   margin: 0;
   transition: background-color 0.3s ease, color 0.3s ease;
   overflow-x: hidden;
